@@ -9,4 +9,5 @@ const routes = (server) => {
     server.use('/chat', chat);
 }
 
+//Exports routes to receive them on the server
 module.exports = routes;

@@ -4,17 +4,21 @@ const router = require('./network/routes');
 
 const db = require('./database/db');
 
-db();
-
+//Initializations
 const app = express();
 
-app.use(express.json());
-app.use(express.static('public/'));
-
-router(app); 
-
+//Settings
 app.set('port', process.env.PORT || 3000);
 
+//Middlewares
+app.use(express.json());
+app.use(express.static('public/'));
+db(); 
+
+//Routes
+router(app); 
+
+//Start the server
 app.listen(app.get('port'), () => {
     console.log(`Server on port ${app.get('port')}`)
 });
