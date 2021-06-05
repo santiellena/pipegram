@@ -1,10 +1,11 @@
 const multer = require('multer');
 const uniqid = require('uniqid');
 const path = require('path');
+const config = require('../configs');
 
 const storageFiles = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/files/');
+        cb(null, `${config.publicRoute}${config.filesRoute}`);
     },
     filename: (req, file, cb) => {
         const extension = path.extname(file.originalname).toLowerCase();
@@ -15,7 +16,7 @@ const storageFiles = multer.diskStorage({
 
 const file = multer({ 
     storage: storageFiles,
-    dest: 'public/files/',
+    dest: `${config.publicRoute}${config.filesRoute}`,
     limits: {
         fileSize: 1000000,
         
