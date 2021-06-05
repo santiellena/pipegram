@@ -2,22 +2,24 @@ const express = require('express');
 
 const router = require('./network/routes');
 
-const db = require('./database/db');
+const db = require('./databases/mongodb');
 
 const socket = require('./socket');
 
-const cors = require('cors')
+const cors = require('cors');
+
+const config = require('./configs');
 
 //Initializations
 const app = express();
 const server = require('http').Server(app);
 
 //Settings
-app.set('port', process.env.PORT || 3000);
+
 
 //Middlewares
 app.use(express.json());
-app.use(express.static('public/'));
+app.use(express.static(config.publicRoute));
 app.use(cors());
 db(); 
 
@@ -26,6 +28,6 @@ socket.connect(server);
 router(app); 
 
 //Start the server
-server.listen(app.get('port'), () => {
-    console.log(`Server on port ${app.get('port')}`)
+server.listen(config.port, () => {
+    console.log(`Server listening ${config.host}:${config.port}`);
 });
