@@ -8,7 +8,7 @@ const socket = require('./socket');
 
 const cors = require('cors');
 
-const config = require('./configs');
+const config = require('./config');
 
 //Initializations
 const app = express();

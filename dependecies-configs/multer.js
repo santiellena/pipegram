@@ -1,7 +1,7 @@
 const multer = require('multer');
 const uniqid = require('uniqid');
 const path = require('path');
-const config = require('../configs');
+const config = require('../config');
 
 const storageFiles = multer.diskStorage({
     destination: (req, file, cb) => {

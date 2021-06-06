@@ -1,7 +1,7 @@
 const db = require('mongoose');
 
-const configs = require('../configs');
-const uri = configs.DBuri;
+const configs = require('../config');
+const uri = configs.MONGOuri;
 const config = {
     useNewUrlParser: true, 
     useUnifiedTopology: true,
