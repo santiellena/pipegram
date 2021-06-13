@@ -18,7 +18,7 @@ const file = multer({
     storage: storageFiles,
     dest: `${config.publicRoute}${config.filesRoute}`,
     limits: {
-        fileSize: 1000000,
+        fileSize: 10000000,
         
     }
 }).single('file');
