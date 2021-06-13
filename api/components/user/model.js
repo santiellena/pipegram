@@ -12,7 +12,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-    }
+    },
+    contacts: [{
+        type: Schema.ObjectId,
+        ref: 'user',
+    }]
 });
 
 module.exports = mongoose.model('user', userSchema);

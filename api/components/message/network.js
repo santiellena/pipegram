@@ -4,7 +4,7 @@ const router = express.Router();
 const response = require('../../network/response');
 const controller =  require('./controller');
 
-const upload = require('../../utils/multer');
+const upload = require('../../../utils/multer');
 
 router.get('/', (req, res) => {
     const filterMessages = req.query.idChat || null;

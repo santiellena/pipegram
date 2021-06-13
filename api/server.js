@@ -2,17 +2,18 @@ const express = require('express');
 
 const router = require('./network/routes');
 
-const db = require('./store/mongodb');
-
+const db = require('../store/mongodb');
 const socket = require('./socket');
 
 const cors = require('cors');
 
-const config = require('./config');
+const config = require('../config');
+
 
 //Initializations
 const app = express();
 const server = require('http').Server(app);
+const error = require('./network/errors');
 
 //Settings
 
@@ -26,6 +27,9 @@ db();
 //Routes
 socket.connect(server);
 router(app); 
+
+//Errors
+app.use(error);
 
 //Start the server
 server.listen(config.api.port, () => {

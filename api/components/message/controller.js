@@ -1,6 +1,6 @@
 const store = require('./store');
 const { socket } = require('../../socket');
-const config = require('../../config')
+const config = require('../../../config')
 
 const addMessage = (idUser, message, idChat, file) => {
 
