@@ -1,12 +1,13 @@
 const store = require('./store');
 const auth = require('../auth/controller');
+const boom = require('@hapi/boom');
 
 const createUser = (body) => {
 
     return new Promise( async (resolve, reject) => {
         if( !body.username || !body.email || !body.password){
 
-            return reject('Incomplete fields');
+            return reject(boom.badRequest('Incomplete fields'));
         };
 
         const user = {
@@ -26,13 +27,13 @@ const createUser = (body) => {
     });
 };
 
-const listUser = () => {
-
-    return Promise.resolve(store.list());
+const listUser = async () => {
+    
+    return await store.list();
 };
 
 const listContacts = (id) => {
-
+    
     return Promise.resolve(store.listContacts(id));
 };
 

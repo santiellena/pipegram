@@ -41,7 +41,7 @@ const listContacts = (id) => {
                     return reject(err);
                 };
 
-                resolve(populate.contacts);
+                resolve(populate);
             });
 
     });
