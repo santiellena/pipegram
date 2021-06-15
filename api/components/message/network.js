@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const response = require('../../network/response');
+const response = require('../../../network/response');
 const controller =  require('./controller');
 
 const upload = require('../../../utils/multer');

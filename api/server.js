@@ -13,7 +13,7 @@ const config = require('../config');
 //Initializations
 const app = express();
 const server = require('http').Server(app);
-const error = require('./network/errors');
+const error = require('../network/errors');
 
 //Settings
 
