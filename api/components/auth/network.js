@@ -10,9 +10,7 @@ router.post('/login', (req, res, next) => {
     .then(TOKEN => {
         response.success(req, res, TOKEN, 200);
     })
-    .catch(err => {
-        response.error(req, res, 'Internal error', 500, err)
-    });
+    .catch(next);
 });
 
 

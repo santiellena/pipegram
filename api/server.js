@@ -8,12 +8,11 @@ const socket = require('./socket');
 const cors = require('cors');
 
 const config = require('../config');
-
+const error = require('../utils/errors');
 
 //Initializations
 const app = express();
 const server = require('http').Server(app);
-const error = require('../network/errors');
 
 //Settings
 
@@ -28,8 +27,9 @@ db();
 socket.connect(server);
 router(app); 
 
-//Errors
-app.use(error);
+//Errors middleware
+app.use(error.wrapErrors);
+app.use(error.errors);
 
 //Start the server
 server.listen(config.api.port, () => {

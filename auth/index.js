@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../config');
 const secret = config.jwt.secret;
-const error = require('../utils/error');
+
+const boom = require('@hapi/boom');
 
 const sign = (data) => {
     
@@ -15,7 +16,7 @@ const verify = (token) => {
     try{
         return jwt.verify(token, secret);
     }catch(error){
-        throw error(error, 401);
+        throw boom.unauthorized(error);
     };
 }
 
@@ -24,7 +25,7 @@ const check = {
         const decoded = decodeHeader(req);
         if(decoded.id !== owner){
 
-            throw error('Access denied', 401);
+            throw boom.unauthorized('Access denied');
         };
         return true;
     },
@@ -34,10 +35,10 @@ const check = {
 const getToken = (auth) => {
 
     if(!auth){
-        throw error('There is not TOKEN', 401);
+        throw new boom.unauthorized('There is not TOKEN');
     }
     if(auth.indexOf('Bearer ', '') == -1){
-        throw error('Incorrect TOKEN information', 401);
+        throw boom.unauthorized('Incorrect TOKEN information');
     }
 
     let token = auth.replace('Bearer ', '');

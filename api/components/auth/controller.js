@@ -1,7 +1,6 @@
 const auth = require('../../../auth/index');
 const bcrypt = require('bcrypt');
-const error = require('../../../utils/error');
-
+const boom = require('@hapi/boom');
 const store = require('./store');
 
 const insert = (data) => {
@@ -11,7 +10,7 @@ const insert = (data) => {
 
         if(!data.username || !data.password || !data.email){
 
-            return reject(error('[controllerAuth] No data', 400));
+            return reject(boom.badRequest('No data'));
         }
     
             authData.username = data.username;
@@ -29,7 +28,7 @@ const login = async (username, password) => {
     const data = await store.query(username);
         if(data == undefined){
 
-            throw error('Incomplete Fields', 400);
+            throw boom.badRequest('Incomplete Fields');
         };
         
        return bcrypt.compare(password, data.password)
@@ -40,7 +39,7 @@ const login = async (username, password) => {
                 return auth.sign(data.toJSON());  //Returns TOKEN
             } else{
 
-                return error('Incorrect Information', 401);
+                return boom.unauthorized('Incorrect Information', 401);
             }
         })
         .catch();

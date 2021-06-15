@@ -6,28 +6,23 @@ const controller =  require('./controller');
 
 const upload = require('../../../utils/multer');
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
     const filterMessages = req.query.idChat || null;
     controller.getMessages(filterMessages)
     .then(list => {
         response.success(req, res, list, 200);
     })
-    .catch(e => {
-        response.error(req, res, 'Request error', 400, e);
-    })
+    .catch(next);
 });
 
 
-router.post('/', upload.file, (req, res) => {
+router.post('/', upload.file, (req, res, next) => {
     
     controller.addMessage(req.body.idUser, req.body.message, req.body.idChat, req.file)
     .then(() => {
         response.success(req, res, 'Created successfully', 201);
     })
-    .catch( e => {
-        response.error(req, res, "Request error", 400, e);
-    });
-    
+    .catch(next);
     
 });
 

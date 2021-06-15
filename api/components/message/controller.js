@@ -1,14 +1,15 @@
 const store = require('./store');
 const { socket } = require('../../socket');
-const config = require('../../../config')
+const config = require('../../../config');
+const boom = require('@hapi/boom');
 
 const addMessage = (idUser, message, idChat, file) => {
 
     return new Promise((resolve, reject) => {
         
         if( !idUser || !message || !idChat){
-            console.error('[messageController] Incompleted params');
-            return reject('Incorrect data');
+            console.error();
+            return reject(boom.badRequest('Incorrect data'));
         }
         let filePath = '';
         if(file){
@@ -43,7 +44,7 @@ const updateMessage = (id, message) => {
 
         if(!id || !message){
 
-            return reject('[messageController] Incompleted params');
+            return reject(boo.badRequest('Incomplete information'));
         }
         const result = await store.update(id, message);
 
@@ -55,7 +56,7 @@ const updateMessage = (id, message) => {
 const deleteMessage = (id) => {
     return new Promise( async (resolve, reject) => {
         if( !id ){
-            reject('[messageController] Incorrect parameter');
+            reject(boom.badRequest('Need choose a message to be deleted'));
         }
         const result = await store.delete(id);
 
