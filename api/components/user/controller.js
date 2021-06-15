@@ -26,12 +26,18 @@ const createUser = (body) => {
     });
 };
 
-const listUser = (filterUser) => {
+const listUser = () => {
 
-    return Promise.resolve(store.list(filterUser));
+    return Promise.resolve(store.list());
+};
+
+const listContacts = (id) => {
+
+    return Promise.resolve(store.listContacts(id));
 };
 
 module.exports = {
     createUser,
     listUser,
+    listContacts,
 }

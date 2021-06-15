@@ -35,7 +35,8 @@ const login = async (username, password) => {
        return bcrypt.compare(password, data.password)
         .then(equal => {
             if(equal == true){
-    
+                
+                delete data.password;
                 return auth.sign(data.toJSON());  //Returns TOKEN
             } else{
 

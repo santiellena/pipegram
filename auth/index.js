@@ -6,7 +6,9 @@ const error = require('../utils/error');
 
 const sign = (data) => {
     
-    return jwt.sign(data, secret);
+    return jwt.sign(data, secret, {
+        expiresIn: 60 * 60 * 24 * 7
+    });
 };
 
 const verify = (token) => {
@@ -35,7 +37,7 @@ const getToken = (auth) => {
         throw error('There is not TOKEN', 401);
     }
     if(auth.indexOf('Bearer ', '') == -1){
-        throw new Error('Incorrect TOKEN information', 401);
+        throw error('Incorrect TOKEN information', 401);
     }
 
     let token = auth.replace('Bearer ', '');

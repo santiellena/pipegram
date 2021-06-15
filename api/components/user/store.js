@@ -8,7 +8,7 @@ const createUser = async (user) => {
 
 const deleteUser = async (id) => {
 
-
+    
 };
 
 const updateUser = async (id) => {
@@ -16,14 +16,10 @@ const updateUser = async (id) => {
 
 };
 
-const listUser = async (filterUser) => {
+const listUser = () => {
+
     return new Promise((resolve, reject) => {
-        let filter = {};
-        if(filterUser != null){
-    
-            filter = { _id : filterUser };        
-        }
-        Model.find(filter)
+        Model.find()
         .populate('contacts')
                 .exec((error, populate) => {
                     if( error ){
@@ -33,7 +29,22 @@ const listUser = async (filterUser) => {
                     resolve(populate);
         });
     });
-    
+};
+
+const listContacts = (id) => {
+
+    return new Promise((resolve, reject) => {
+        Model.find({_id: id})
+        .populate('contacts')
+            .exec((err, populate) => {
+                if(err){
+                    return reject(err);
+                };
+
+                resolve(populate.contacts);
+            });
+
+    });
 };
 
 module.exports = {
@@ -41,4 +52,5 @@ module.exports = {
     delete: deleteUser,
     update: updateUser,
     list: listUser,
+    listContacts,
 };

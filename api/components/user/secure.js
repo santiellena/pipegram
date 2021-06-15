@@ -11,7 +11,7 @@ const chechAuth = (action) => {
                 next();
                 break;
             case 'get': 
-                owner = req.body.id;
+                owner = req.params.id;
                 auth.check.own(req, owner);
                 next();
                 break;
