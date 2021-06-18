@@ -6,7 +6,7 @@ const secure = require('./secure');
 
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
+router.post('/register', (req, res, next) => {
 
     controller.createUser(req.body)
     .then( data => {
@@ -16,9 +16,9 @@ router.post('/', (req, res, next) => {
 
 });
 
-router.get('/', (req, res, next) => {
+router.get('/:id', secure('get'), (req, res, next) => {
 
-    controller.listUser()
+    controller.getUser(req.params.id)
     .then(data => {
         response.success(req, res, data, 200);
     })

@@ -7,9 +7,7 @@ const boom = require('@hapi/boom');
 
 const sign = (data) => {
     
-    return jwt.sign(data, secret, {
-        expiresIn: 60 * 60 * 24 * 7
-    });
+    return jwt.sign(data, secret);
 };
 
 const verify = (token) => {
@@ -50,7 +48,6 @@ const decodeHeader = (req) => {
     const authorization = req.headers.authorization || '';
     const token = getToken(authorization);
     const decoded = verify(token);
-
     req.user = decoded;
     return decoded;
 };
