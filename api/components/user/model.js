@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
-
 const {Schema} = mongoose;
+const config = require('../../../config');
 
 const userSchema = new Schema({
+    name: {
+        type: String, 
+        required: true, 
+    },
     username: {
         type: String, 
         required: true, 
         unique: true,
     },
-    email: {
+    profilePhoto: {
         type: String,
-        required: true,
-        unique: true,
+        default: `${config.api.host}:${config.api.port}/${config.api.public.files}${config.api.public.defaultPhoto}`,
     },
     contacts: [{
         type: Schema.ObjectId,

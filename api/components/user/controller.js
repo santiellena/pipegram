@@ -5,12 +5,13 @@ const boom = require('@hapi/boom');
 const createUser = (body) => {
 
     return new Promise( async (resolve, reject) => {
-        if( !body.username || !body.email || !body.password){
+        if( !body.username || !body.email || !body.password || !body.name){
 
             return reject(boom.badRequest('Incomplete fields'));
         };
 
         const user = {
+            name: body.name,
             username: body.username,
             email: body.email,
         }
@@ -27,9 +28,31 @@ const createUser = (body) => {
     });
 };
 
-const listUser = async () => {
-    
-    return await store.list();
+const deleteUser = async (id) => {
+
+    if(!id){
+
+        boom.badRequest('Must be an id');
+    }
+
+    return await store.delete(id);
+};
+
+const updateUser = async (data) => {
+    const newInfo = {
+        name: data.name? data.name : null,
+        username: data.username? data.username : null,
+    };
+
+    return await store.update(newInfo);
+};
+
+const getUser = async (id) => {
+    if(!id){
+
+        throw boom.badRequest('Incomplete information');
+    }
+    return await store.list(id);
 };
 
 const listContacts = (id) => {
@@ -39,6 +62,8 @@ const listContacts = (id) => {
 
 module.exports = {
     createUser,
-    listUser,
+    getUser,
     listContacts,
+    deleteUser,
+    updateUser,
 }

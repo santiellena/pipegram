@@ -1,4 +1,3 @@
 /node_modules
-/public/files/*
-/configs.js
+/api/public/files/*
 /config.js

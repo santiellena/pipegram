@@ -13,7 +13,7 @@ const addMessage = (idUser, message, idChat, file) => {
         }
         let filePath = '';
         if(file){
-            filePath = `${config.api.host}:${config.api.port}/${config.api.filesRoute}${file.emitfilename}`
+            filePath = `${config.api.host}:${config.api.port}/${config.api.public.files}${file.emitfilename}`
         }
         const fullMessage = {
             "user": idUser,

@@ -6,7 +6,6 @@ const db = require('../store/mongodb');
 const socket = require('./socket');
 
 const cors = require('cors');
-
 const config = require('../config');
 const error = require('../utils/errors');
 
@@ -19,7 +18,7 @@ const server = require('http').Server(app);
 
 //Middlewares
 app.use(express.json());
-app.use(express.static(config.api.publicRoute));
+app.use(express.static(__dirname + config.api.public.route));
 app.use(cors());
 db(); 
 

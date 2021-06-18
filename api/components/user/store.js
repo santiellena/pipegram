@@ -1,14 +1,14 @@
 const Model = require('./model');
 
 const createUser = async (user) => {
-    const myUser = new Model(user);
+    const myUser = await new Model(user);
 
-    return myUser.save();
+    return await myUser.save();
 };
 
 const deleteUser = async (id) => {
 
-    
+    return await Model.findByIdAndDelete(id);
 };
 
 const updateUser = async (id) => {
@@ -16,10 +16,9 @@ const updateUser = async (id) => {
 
 };
 
-const listUser = () => {
-
+const listUser = (id) => {
     return new Promise((resolve, reject) => {
-        Model.find()
+        Model.find({_id: id})
         .populate('contacts')
                 .exec((error, populate) => {
                     if( error ){
@@ -35,7 +34,10 @@ const listContacts = (id) => {
 
     return new Promise((resolve, reject) => {
         Model.find({_id: id})
-        .populate('contacts')
+        .populate({
+            path: 'contacts',
+            select: 'name',
+        })
             .exec((err, populate) => {
                 if(err){
                     return reject(err);
@@ -47,10 +49,18 @@ const listContacts = (id) => {
     });
 };
 
+const query = async (username) => {
+
+    const data = await Model.find({username: username});
+
+    return data[0];
+};
+
 module.exports = {
     create: createUser,
     delete: deleteUser,
     update: updateUser,
     list: listUser,
     listContacts,
+    query,
 };

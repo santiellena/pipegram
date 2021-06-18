@@ -10,6 +10,7 @@ const insert = async (data) => {
 
 const query = async (username) => {
     const data = await Model.find({username: username});
+    
     return data[0];
 }
 

@@ -2,6 +2,7 @@ const auth = require('../../../auth/index');
 const bcrypt = require('bcrypt');
 const boom = require('@hapi/boom');
 const store = require('./store');
+const userStore = require('../user/store');
 
 const insert = (data) => {
 
@@ -26,21 +27,26 @@ const insert = (data) => {
 const login = async (username, password) => {
     
     const data = await store.query(username);
+    const userSemiPublicData = await userStore.query(username);
+
         if(data == undefined){
 
             throw boom.badRequest('Incomplete Fields');
         };
-        
+    //const toCompare = data.password;
        return bcrypt.compare(password, data.password)
         .then(equal => {
             if(equal == true){
+               const tokenData = {
+                    username: data.username,
+                    id: userSemiPublicData.id,
+                };
                 
-                delete data.password;
-                return auth.sign(data.toJSON());  //Returns TOKEN
+                return auth.sign(tokenData);  //Returns TOKEN
             } else{
 
                 return boom.unauthorized('Incorrect Information', 401);
-            }
+            };
         })
         .catch();
 
