@@ -40,6 +40,7 @@ const login = async (username, password) => {
                const tokenData = {
                     username: data.username,
                     id: userSemiPublicData.id,
+                    scope: 
                 };
                 
                 return auth.sign(tokenData);  //Returns TOKEN
