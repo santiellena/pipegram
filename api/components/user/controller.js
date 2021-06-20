@@ -22,7 +22,7 @@ const createUser = (body) => {
                 email: user.email,
                 password: body.password,
             });
-        }
+        };
 
         resolve(store.create(user));
     });
