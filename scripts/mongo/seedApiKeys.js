@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const mongoStore = require('../../store/mongodb');
-const model = require('./apiKeysModel');
+const model = require('../../auth/apiKeysModel');
 
 const adminScopes = [
   'login:auth',

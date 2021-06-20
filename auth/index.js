@@ -53,7 +53,9 @@ const decodeHeader = (req) => {
     req.user = decoded;
     return decoded;
 };
+
 module.exports = {
     sign,
     check,
-}
+    decodeHeader,
+};
