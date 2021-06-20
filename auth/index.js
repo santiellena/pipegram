@@ -7,7 +7,9 @@ const boom = require('@hapi/boom');
 
 const sign = (data) => {
     
-    return jwt.sign(data, secret);
+    return jwt.sign(data, secret, {
+        expiresIn: '15m',
+    });
 };
 
 const verify = (token) => {
@@ -51,7 +53,9 @@ const decodeHeader = (req) => {
     req.user = decoded;
     return decoded;
 };
+
 module.exports = {
     sign,
     check,
-}
+    decodeHeader,
+};

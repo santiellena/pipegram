@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const boom = require('@hapi/boom');
 const store = require('./store');
 const userStore = require('../user/store');
+const apiKeyService = require('../../../auth/apiKeyService');
 
 const insert = (data) => {
 
@@ -24,22 +25,32 @@ const insert = (data) => {
     
 };
 
-const login = async (username, password) => {
-    
+const login = async (username, password, apiKeyToken) => {
+
+    if(!apiKeyToken){
+
+        throw boom.badRequest('ApiKeyToken is required');
+    };
     const data = await store.query(username);
     const userSemiPublicData = await userStore.query(username);
-
         if(data == undefined){
 
             throw boom.badRequest('Incomplete Fields');
         };
-    //const toCompare = data.password;
+
+        const apiKey = await apiKeyService(apiKeyToken);
+        if(apiKey == undefined){
+
+            throw boom.badRequest('Incorrect ApiKeyToken');
+        };
+        
        return bcrypt.compare(password, data.password)
         .then(equal => {
             if(equal == true){
                const tokenData = {
                     username: data.username,
                     id: userSemiPublicData.id,
+                    scope: apiKey.scopes,
                 };
                 
                 return auth.sign(tokenData);  //Returns TOKEN

@@ -2,7 +2,8 @@ const express = require('express');
 
 const response = require('../../../network/response');
 const controller = require('./controller');
-const secure = require('./secure');
+const secure = require('../../../utils/middlewares/secure'); //Verifica que el token pertenece al cliente y es valido
+const allowed = require('../../../utils/middlewares/allowScope'); //Verifica los permisos
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.post('/register', (req, res, next) => {
 
 });
 
-router.get('/:id', secure('get'), (req, res, next) => {
+router.get('/:id', allowed(['read:user']), secure('get'), (req, res, next) => {
 
     controller.getUser(req.params.id)
     .then(data => {
