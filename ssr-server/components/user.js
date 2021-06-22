@@ -5,22 +5,25 @@ const boom = require('@hapi/boom');
 const config = require('../config');
 const axios = require('axios');
 const passport = require('passport');
+const response = require('../network/response');
 
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 
     try {
-        const { user } = req.body
         const { token } = req.cookies;
+        if(!token || token == undefined){
+            throw boom.badRequest('There is no token');  
+        }
+        const { id } = req.params;
+        const { data, status } = await axios({
 
-        const { data, status } = axios({
-
-            url: `${config.apiUrl}api/user/${user.id}`,
+            url: `${config.apiUrl}api/user/${id}`,
+            headers: { Authorization: `Bearer ${token}` },
             method: 'get',
-            data: user,
         });
 
-        res.status(status).json(data);
+        response.success(req, res, data, status);
     } catch (err) {
         next(err);
     }

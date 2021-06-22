@@ -10,8 +10,8 @@ const THIRTY_DAYS_IN_SEC = 2592000;
 const TWO_HOURS_IN_SEC = 7200;
 
 router.post('/login', async (req, res, next) => {
-    try{
-        const { status, data, statusText } = await axios({
+    try {
+        await axios({
             url: `${config.apiUrl}api/auth/login`,
             method: 'post',
             data: {
@@ -19,32 +19,39 @@ router.post('/login', async (req, res, next) => {
                 password: req.body.password,
                 apiKeyToken: config.apiKeyToken,
             },
-        });
+        }).then((responsed) => {
 
-        if(!data){
-
-            next(boom.unauthorized());
-        }
-
-        req.login(data, { session: false }, async (err) => {
-            if(err){
-                next(err);
-            };
-        
-            res.cookie("token", data, {
-
-                httpOnly: config.mode !== 'dev' ? false : config.mode,
-                secure: config.mode !== 'dev' ? false : config.mode,
-                //maxAge: remembeMe ? THIRTY_DAYS_IN_SEC : TWO_HOURS_IN_SEC,
+            const { status, data, statusText } = responsed;
+    
+            if(!data){
+    
+                next(boom.unauthorized());
+            }
+    
+            req.login(data, { session: false }, async (err) => {
+                if(err){
+                    next(err);
+                };
+            
+                res.cookie("token", data, {
+    
+                    //httpOnly: config.mode !== 'dev' ? false : config.mode,
+                    //secure: config.mode !== 'dev' ? false : config.mode,
+                    //maxAge: THIRTY_DAYS_IN_SEC,
+                });
+    
+                response.success(req, res, statusText, status);
             });
 
+        })
+        .catch(err => {
 
-            response.success(req, res, statusText, status);
+            throw boom.unauthorized(err);
         });
+    } 
+    catch(err) {
 
-    } catch(err){
-
-        response.error(req, res, err, 400);
+        next(boom.badImplementation(err));
     }
 
 });

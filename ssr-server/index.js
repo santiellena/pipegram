@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const routes = require('./network/routes');
 
 const cors = require('cors');
+const error = require('./utils/errors');
 
 //Initializations
 const app = express();
@@ -16,6 +17,10 @@ app.use(cors());
 
 //ROUTES
 routes(app);
+
+//Errors middleware
+app.use(error.wrapErrors);
+app.use(error.errors);
 
 //Server listening
 app.listen(config.port, () => {
