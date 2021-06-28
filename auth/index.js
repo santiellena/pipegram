@@ -13,11 +13,8 @@ const sign = (data) => {
 };
 
 const verify = (token) => {
-    try{
+        
         return jwt.verify(token, secret);
-    }catch(error){
-        throw boom.unauthorized(error);
-    };
 }
 
 const check = {
