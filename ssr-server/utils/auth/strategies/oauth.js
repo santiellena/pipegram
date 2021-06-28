@@ -35,8 +35,29 @@ const oAuth2Strategy = new OAuth2Strategy({
     return cb(null, data);
 });
 
-oAuth2Strategy.userProfile = (accessToken, where) => {
+oAuth2Strategy.userProfile = (accessToken, done) => {
     this._oauth2.get(GOOGLE_URSERINFO_URL, accessToken, (err, body) => {
-        
+        if(err){
+            return done(err);
+        }
+
+        try{
+
+            const { sub, name, email } = JSON.parse(body);
+
+            const profile = {
+                id: sub,
+                name,
+                email,
+            };
+
+            done(null, profile);
+
+        } catch(parseError){
+
+            return done(parseError)
+        }
     });
 };
+
+passport.use('google-oauth', oAuth2Strategy);
