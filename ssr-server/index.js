@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const routes = require('./network/routes');
 
 const cors = require('cors');
+const helmet = require('helmet');
+
 const error = require('./utils/errors');
 
 //Initializations
@@ -14,6 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(helmet());
 
 //ROUTES
 routes(app);

@@ -6,12 +6,14 @@ const db = require('../store/mongodb');
 const socket = require('./socket');
 
 const cors = require('cors');
+const helmet = require('helmet');
+
 const config = require('../config');
 const error = require('../utils/errors');
 
 //Initializations
 const app = express();
-const server = require('http').Server(app);
+const server = require('https').Server(app);
 
 //Settings
 
@@ -20,6 +22,7 @@ const server = require('http').Server(app);
 app.use(express.json());
 app.use(express.static(__dirname + config.api.public.route));
 app.use(cors());
+app.use(helmet());
 db(); 
 
 //Routes

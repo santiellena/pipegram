@@ -7,14 +7,20 @@ const axios = require('axios');
 const response = require('../network/response');
 const passport = require('passport');
 
+const limiter = require('../utils/rateLimiter');
+
 const THIRTY_DAYS_IN_SEC = 2592000;
 const TWO_HOURS_IN_SEC = 7200;
 
 //Google OAuth Strategy
 require('../utils/auth/strategies/oauth');
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', limiter.login, async (req, res, next) => {
     try {
+        if(!req.body.username || !req.body.password){
+
+            next(boom.badRequest('Incomplete fields'));
+        }
         await axios({
             url: `${config.apiUrl}api/auth/login`,
             method: 'post',
@@ -38,10 +44,9 @@ router.post('/login', async (req, res, next) => {
                 };
             
                 res.cookie("token", data, {
-    
-                    //httpOnly: config.mode !== 'dev' ? false : config.mode,
-                    //secure: config.mode !== 'dev' ? false : config.mode,
-                    //maxAge: THIRTY_DAYS_IN_SEC,
+                    httpOnly: config.mode !== 'dev' ? false : config.mode,
+                    secure: config.mode !== 'dev' ? false : config.mode,
+                    maxAge: THIRTY_DAYS_IN_SEC,
                 });
     
                 response.success(req, res, statusText, status);
@@ -61,13 +66,19 @@ router.post('/login', async (req, res, next) => {
 });
 
 
-router.post('/register', async (req, res, next) => {
+router.post('/register', limiter.register, async (req, res, next) => {
+
     const userData = {
         username: req.body.username,
         password: req.body.password,
         name: req.body.name,
         email: req.body.email
     };
+
+    if(!userData.username || !userData.password || !userData.name || !userData.email){
+
+        next(boom.badRequest('Incomplete information'));
+    }
 
     try{
         await axios({
@@ -83,7 +94,7 @@ router.post('/register', async (req, res, next) => {
     }
 });
 
-router.get('/google-oauth', passport.authenticate('google-oauth', {
+router.get('/google-oauth', limiter.login, passport.authenticate('google-oauth', {
     scope: [
         'email',
         'profile',
@@ -91,7 +102,7 @@ router.get('/google-oauth', passport.authenticate('google-oauth', {
     ]
 }));
 
-router.get('/google-oauth/callback', passport.authenticate('google-oauth', {session: false}),
+router.get('/google-oauth/callback', limiter.login, passport.authenticate('google-oauth', {session: false}),
 (req, res, next) => {
     if(!req.user){
 
