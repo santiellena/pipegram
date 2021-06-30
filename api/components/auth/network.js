@@ -16,5 +16,14 @@ router.post('/login', (req, res, next) => {
     .catch(next);
 });
 
+router.post('/auth-provider', (req, res, next) => {
+
+    controller.providerUserLogin(req.body)
+    .then(data => {
+        response.success(req, res, data, 200);
+    })
+    .catch(next);
+});
+
 
 module.exports = router;

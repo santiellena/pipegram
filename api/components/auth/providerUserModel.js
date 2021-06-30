@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 const config = require('../../../config');
 
-const userSchema = new Schema({
+const providerUserSchema = new Schema({
     name: {
         type: String, 
         required: true, 
     },
     username: {
         type: String, 
-        required: true, 
+        default: 'invited-user',
+    },
+    email: {
+        type: String,
+        required: true,
         unique: true,
     },
     profilePhoto: {
@@ -20,11 +24,10 @@ const userSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'user',
     }],
-    isAdmin: {
-        type: Boolean,
+    apiKeyToken: {
+        type: String,
         required: true,
-        default: false,
-    },
+    }
 });
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('providerUser', providerUserSchema);

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const boom = require('@hapi/boom');
 const store = require('./store');
 const userStore = require('../user/store');
+
 const apiKeyService = require('../../../auth/apiKeyService');
 
 const insert = (data) => {
@@ -31,8 +32,8 @@ const login = async (username, password, apiKeyToken) => {
 
         throw boom.badRequest('ApiKeyToken is required');
     };
-    const data = await store.query(username);
-    const userSemiPublicData = await userStore.query(username);
+    const data = await store.query({username: username});
+    const userSemiPublicData = await userStore.query({username: username});
         if(data == undefined){
 
             throw boom.badRequest('Incomplete Fields');
@@ -48,7 +49,6 @@ const login = async (username, password, apiKeyToken) => {
         .then(equal => {
             if(equal == true){
                const tokenData = {
-                    username: data.username,
                     id: userSemiPublicData.id,
                     scope: apiKey.scopes,
                 };
@@ -63,7 +63,82 @@ const login = async (username, password, apiKeyToken) => {
 
 };
 
+const createOrGetUser = async (body) => {
+    const queriedUser = await store.queryProviderUser({email: body.user.email});
+
+    if(queriedUser){
+
+        return queriedUser;
+    }
+
+    if(!body.user.email || !body.user.password || !body.user.name){
+
+        return boom.badRequest();
+    };
+
+    const userData = {
+        name: body.user.name,
+        email: body.user.email,
+        password: body.user.password,
+        apiKeyToken: body.apiKeyToken,
+    }
+
+    if(body.user.password || body.user.username){
+        await store.insertProviderUserAuth({
+            username: body.user.username,
+            name: body.user.name,
+            email: body.user.email,
+            password: body.user.password,
+        });
+    };
+
+    return await store.createProviderUser(userData);
+};
+
+const providerUserLogin = async (body) => { //For providers users
+
+    return new Promise( async (resolve, reject) => {
+        if(!body.apiKeyToken){
+
+            return reject(boom.unauthorized('ApiKeyToken is required...'));
+        }
+    
+        if(!body.user.email || !body.user.password || !body.user.name ){
+
+            return reject(boom.badRequest('Incomplete fields'));
+        };
+
+        const apiKey = await apiKeyService(body.apiKeyToken);
+
+        if(!apiKey){
+
+            return reject(boom.unauthorized('Invalid Token'));
+        }
+
+        const queriedUser = await createOrGetUser(body);
+        
+        const payload = {
+            sub: queriedUser._id,
+            username: queriedUser.username,
+            email: queriedUser.email,
+            scopes: apiKey.scopes,
+        }
+
+        const token = await auth.sign(payload);
+
+        const data = () => {
+            return {
+                user: queriedUser,
+                token,
+            }
+        }
+
+        resolve(data());
+    });
+};
+
 module.exports = {
     insert,
     login,
+    providerUserLogin,
 };

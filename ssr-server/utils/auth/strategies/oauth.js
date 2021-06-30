@@ -13,16 +13,18 @@ const oAuth2Strategy = new OAuth2Strategy({
     tokenURL: GOOGLE_TOKEN_URL,
     clientID: config.oauth.googleIdClient,
     clientSecret: config.oauth.googleClientSecret,
-    callbackURL: '/auht/google-oauth/callback',
+    callbackURL: '/auth/google-oauth/callback',
 }, async (accessToken, refreshToken, profile, cb) => {
 
     const { data, status } = await axios({
-        url: `${config.apiUrl}/api/auth/login/login-provider`,
+        url: `${config.apiUrl}api/auth/auth-provider`,
         method: 'post',
         data: {
-            name: profile.name,
-            email: profile.email,
-            password: profile.id,
+            user: {
+                name: profile.name,
+                email: profile.email,
+                password: profile.id,
+            },
             apiKeyToken: config.apiKeyToken,
         }
     });
@@ -35,7 +37,7 @@ const oAuth2Strategy = new OAuth2Strategy({
     return cb(null, data);
 });
 
-oAuth2Strategy.userProfile = (accessToken, done) => {
+oAuth2Strategy.userProfile = function(accessToken, done) {
     this._oauth2.get(GOOGLE_URSERINFO_URL, accessToken, (err, body) => {
         if(err){
             return done(err);
