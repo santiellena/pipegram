@@ -5,9 +5,9 @@ const controller = require('./controller');
 const response = require('../../../network/response');
 const secure = require('../../../utils/middlewares/secure'); //Verifica que el token pertenece al cliente y es valido
 const allowed = require('../../../utils/middlewares/allowScope');
+const limiter = require('../../../utils/rateLimiter');
 
-
-router.post('/login', (req, res, next) => {
+router.post('/login', limiter.login, allowed('login:auth'), (req, res, next) => {
 
     controller.login(req.body.username, req.body.password, req.body.apiKeyToken)
     .then(TOKEN => {
@@ -16,7 +16,7 @@ router.post('/login', (req, res, next) => {
     .catch(next);
 });
 
-router.post('/auth-provider', (req, res, next) => {
+router.post('/auth-provider', limiter.login, allowed('login:auth'), (req, res, next) => {
 
     controller.providerUserLogin(req.body)
     .then(data => {

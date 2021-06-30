@@ -10,7 +10,7 @@ const insert = (data) => {
 
     return new Promise( async (resolve, reject) => {
         let authData = {};
-
+        const SALT_ROUNDS = 10;
         if(!data.username || !data.password || !data.email){
 
             return reject(boom.badRequest('No data'));
@@ -18,7 +18,7 @@ const insert = (data) => {
     
             authData.username = data.username;
             authData.email = data.email;
-            authData.password = await bcrypt.hash(data.password, 7);
+            authData.password = await bcrypt.hash(data.password, SALT_ROUNDS);
         
         
         resolve(store.insert(authData));
