@@ -49,9 +49,9 @@ const listContacts = (id) => {
     });
 };
 
-const query = async (username) => {
+const query = async (filter) => {
 
-    const data = await Model.find({username: username});
+    const data = await Model.find(filter);
 
     return data[0];
 };
