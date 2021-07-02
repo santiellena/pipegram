@@ -4,13 +4,12 @@ const boom = require('@hapi/boom');
 const checkAllow = (action) => {
     const middleware = async (req, res, next) => {
         const user = auth.decodeHeader(req);
-        if(!user || (user && !user.scope)) {
+        if(!user || (user && !user.scopes)) {
             next(boom.unauthorized('Missing scopes'));
         }
 
-
         const hasAccess = action
-        .map(ACTION => user.scope.includes(ACTION))
+        .map(ACTION => user.scopes.includes(ACTION))
         .find(allowed => Boolean(allowed));
     
         if(hasAccess) {

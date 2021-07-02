@@ -13,7 +13,7 @@ const error = require('../utils/errors');
 
 //Initializations
 const app = express();
-const server = require('https').Server(app);
+const server = require('http').Server(app);
 
 //Settings
 

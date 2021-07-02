@@ -3,9 +3,8 @@ const boom = require('@hapi/boom');
 
 const getToken = async (token) => {
     try{
-        const apiToken = await model.find({token: token});
-
-        return apiToken[0];
+        
+        return  await model.findOne({token: token});
     } catch(err){
 
         throw boom.internal('Internal Server Error');

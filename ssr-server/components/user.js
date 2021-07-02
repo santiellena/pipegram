@@ -12,6 +12,7 @@ router.get('/:id', async (req, res, next) => {
 
     try {
         const { token } = req.cookies;
+       
         if(!token || token == undefined){
             throw boom.badRequest('There is no token');  
         }

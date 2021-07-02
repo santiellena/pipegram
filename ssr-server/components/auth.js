@@ -21,7 +21,7 @@ router.post('/login', limiter.login, async (req, res, next) => {
 
             next(boom.badRequest('Incomplete fields'));
         }
-        await axios({
+        const { status, data, statusText } = await axios({
             url: `${config.apiUrl}api/auth/login`,
             method: 'post',
             data: {
@@ -29,34 +29,27 @@ router.post('/login', limiter.login, async (req, res, next) => {
                 password: req.body.password,
                 apiKeyToken: config.apiKeyToken,
             },
-        }).then((responsed) => {
-
-            const { status, data, statusText } = responsed;
-    
-            if(!data){
-    
-                next(boom.unauthorized());
-            }
-    
-            req.login(data, { session: false }, async (err) => {
-                if(err){
-                    next(err);
-                };
-            
-                res.cookie("token", data, {
-                    httpOnly: config.mode !== 'dev' ? false : config.mode,
-                    secure: config.mode !== 'dev' ? false : config.mode,
-                    maxAge: THIRTY_DAYS_IN_SEC,
-                });
-    
-                response.success(req, res, statusText, status);
-            });
-
-        })
-        .catch(err => {
-
-            throw boom.unauthorized(err);
         });
+
+        if(!data){
+    
+            next(boom.unauthorized());
+        }
+    
+        req.login(data, { session: false }, async (err) => {
+            if(err){
+                next(err);
+            };
+            
+            res.cookie("token", data, {
+                //httpOnly: config.mode !== 'dev' ? false : config.mode,
+                //secure: config.mode !== 'dev' ? false : config.mode,
+                //maxAge: THIRTY_DAYS_IN_SEC,
+            });
+    
+            response.success(req, res, statusText, status);
+        });
+
     } 
     catch(err) {
 

@@ -50,7 +50,7 @@ const login = async (username, password, apiKeyToken) => {
             if(equal == true){
                const tokenData = {
                     id: userSemiPublicData.id,
-                    scope: apiKey.scopes,
+                    scopes: apiKey.scopes,
                 };
                 
                 return auth.sign(tokenData);  //Returns TOKEN
